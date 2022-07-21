@@ -33,9 +33,9 @@ object Day18SparkSQL extends App {
   //this is the other approach
   val dataFrameWay = flightData2015.groupBy("DEST_COUNTRY_NAME").count()
 
-  sqlWay.show(10)
-
-  dataFrameWay.show(10)
+//  sqlWay.show(10)
+//
+//  dataFrameWay.show(10)
 
   //TODO set up logging  log4j2.xml config file
   //TODO set level to warning for both file and console
@@ -61,9 +61,10 @@ object Day18SparkSQL extends App {
   //now we can use SQL!
   // in Scala
   val sqlWay14 = spark.sql("""
-      SELECT DEST_COUNTRY_NAME, count(1)
+      SELECT DEST_COUNTRY_NAME, sum(count) as flight
       FROM flight_data_2014
       GROUP BY DEST_COUNTRY_NAME
+      ORDER BY flight DESC
       """)
 
   //this is the other approach
@@ -71,7 +72,7 @@ object Day18SparkSQL extends App {
 
   sqlWay14.show(10)
 
-  dataFrameWay14.show(10)
+//  dataFrameWay14.show(10)
 
 
 }
