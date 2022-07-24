@@ -1,9 +1,9 @@
 package com.github.ristinak
 
 import org.apache.spark.sql.SparkSession
-
-// in Scala
 import org.apache.spark.sql.functions.{window, column, desc, col}
+import org.apache.spark.sql.functions.date_format
+
 
 object Day19StreamingExample extends App {
   println(s"Exploring Streaming with Scala version: ${util.Properties.versionNumberString}")
@@ -36,48 +36,48 @@ object Day19StreamingExample extends App {
   //    .load("src/resources/retail-data/by-day/*.csv") //notice the wildcard we are loading everything!
   staticDataFrame.createOrReplaceTempView("retail_data")
   val staticSchema = staticDataFrame.schema
-  println(staticSchema.toArray.mkString("\n"))
+//  println(staticSchema.toArray.mkString("\n"))
 
   println(s"We got ${staticDataFrame.count()} rows of data!") //remember count action goes across all partitions
 
-  //  //batch query
-  //  staticDataFrame
-  //    .selectExpr(
-  //      "CustomerId",
-  //      "(UnitPrice * Quantity) as total_cost",
-  //      "InvoiceDate")
-  //    .groupBy(
-  //      col("CustomerId"), window(col("InvoiceDate"), "1 day"))
-  //    .sum("total_cost")
-  //    .show(5)
-  //
+    //batch query
+    staticDataFrame
+      .selectExpr(
+        "CustomerId",
+        "(UnitPrice * Quantity) as total_cost",
+        "InvoiceDate")
+      .groupBy(
+        col("CustomerId"), window(col("InvoiceDate"), "1 day"))
+      .sum("total_cost")
+      .show(5)
+
   //  //Now that we’ve seen how that works, let’s take a look at the streaming code! You’ll notice that
   //  //very little actually changes about the code. The biggest change is that we used readStream
   //  //instead of read, additionally you’ll notice the maxFilesPerTrigger option, which simply specifies
   //  //the number of files we should read in at once. This is to make our demonstration more
   //  //“streaming,” and in a production scenario this would probably be omitted.
-  //
-  //  val streamingDataFrame = spark.readStream
-  //    .schema(staticSchema) //we provide the schema that we got from our static read
-  //    .option("maxFilesPerTrigger", 1)
-  //    .format("csv")
-  //    .option("header", "true")
-  ////    .load("src/resources/retail-data/by-day/*.csv")
-  //    .load("src/resources/retail-data/by-day/2010-12-01.csv")
+
+//    val streamingDataFrame = spark.readStream
+//      .schema(staticSchema) //we provide the schema that we got from our static read
+//      .option("maxFilesPerTrigger", 1)
+//      .format("csv")
+//      .option("header", "true")
+////      .load("src/resources/retail-data/by-day/*.csv")
+//      .load("src/resources/retail-data/by-day/2010-12-01.csv")
   //
   //  //lazy operation This is still a lazy operation, so we will need to call a streaming action to start the execution of
   //  //this data flow.
   //  // in Scala
-  //  val purchaseByCustomerPerHour = streamingDataFrame
-  //    .selectExpr(
-  //      "CustomerId",
-  //      "(UnitPrice * Quantity) as total_cost",
-  //      "InvoiceDate")
-  //    .groupBy(
-  //      col("CustomerId"), window(col("InvoiceDate"), "1 day"))
-  ////    .groupBy(
-  ////      col("CustomerId"), window(col("CustomerId"), "1 day"))
-  //    .sum("total_cost")
+//    val purchaseByCustomerPerHour = streamingDataFrame
+//      .selectExpr(
+//        "CustomerId",
+//        "(UnitPrice * Quantity) as total_cost",
+//        "InvoiceDate")
+//      .groupBy(
+//        col("CustomerId"), window(col("InvoiceDate"), "1 day"))
+//  //    .groupBy(
+//  //      col("CustomerId"), window(col("CustomerId"), "1 day"))
+//      .sum("total_cost")
   //
   //  //Streaming actions are a bit different from our conventional static action because we’re going to
   //  //be populating data somewhere instead of just calling something like count (which doesn’t make
@@ -85,19 +85,37 @@ object Day19StreamingExample extends App {
   //  //we will update after each trigger. In this case, each trigger is based on an individual file (the read
   //  //option that we set). Spark will mutate the data in the in-memory table such that we will always
   //  //have the highest value as specified in our previous aggregation
-  //
-  //  purchaseByCustomerPerHour.writeStream
-  //    .format("memory") // memory = store in-memory table
-  //    .queryName("customer_purchases") // the name of the in-memory table
-  //    .outputMode("complete") // complete = all the counts should be in the table
-  //    .start()
-  //
-  //  // in Scala
-  //  spark.sql("""
-  //      SELECT *
-  //      FROM customer_purchases
-  //      ORDER BY `sum(total_cost)` DESC
-  //      """)
-  //    .show(5)
+
+//    purchaseByCustomerPerHour.writeStream
+//      .format("memory") // memory = store in-memory table
+//      .queryName("customer_purchases") // the name of the in-memory table
+//      .outputMode("complete") // complete = all the counts should be in the table
+//      .start()
+//  //
+//  //  // in Scala
+//    spark.sql("""
+//        SELECT *
+//        FROM customer_purchases
+//        ORDER BY `sum(total_cost)` DESC
+//        """)
+//      .show(5)
+
+  //Machine Learning//
+  staticDataFrame.printSchema()
+
+  val preppedDataFrame = staticDataFrame
+    .na.fill(0)
+    .withColumn("day_of_week", date_format(column("InvoiceDate"), "EEEE"))
+    .coalesce(5)
+
+  val trainDataFrame = preppedDataFrame
+    .where("InvoiceDate < '2011-07-01'")
+  val testDataFrame = preppedDataFrame
+    .where("InvoiceDate >= '2011-07-01'")
+
+  println(trainDataFrame.count())
+ println(testDataFrame.count())
+
+
 }
 

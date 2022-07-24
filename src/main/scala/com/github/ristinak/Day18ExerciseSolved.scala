@@ -25,7 +25,7 @@ object Day18SExerciseSolved extends App {
     .option("header", "true")
     .csv("src/resources/flight-data/csv/2015-summary.csv") //relative path to our project
 
-  println(s"We have ${flightData2015.count()} rows of data")
+  println(s"We have ${flightData2015.count()} rows of data in flightData2015")
 
   //if we want to use SQL syntax on our DataFrames we create a SQL view
   flightData2015.createOrReplaceTempView("flight_data_2015")
@@ -41,9 +41,9 @@ object Day18SExerciseSolved extends App {
   //this is the other approach using methods built into DataFrame
   val dataFrameWay = flightData2015.groupBy("DEST_COUNTRY_NAME").count()
 
-  sqlWay.show(10)
-
-  dataFrameWay.show(10)
+//  sqlWay.show(10)
+//
+//  dataFrameWay.show(10)
 
   sqlWay.explain()
   dataFrameWay.explain()
@@ -73,11 +73,11 @@ object Day18SExerciseSolved extends App {
       ORDER BY flight DESC
       """)
   //TODO show top 10 flights
-  sqlFly.show(10)
+//  sqlFly.show(10)
 
   //again two approaches to do the same thing
-  spark.sql("SELECT max(count) from flight_data_2015").show() //show everything in this case just 1 row
-  flightData2015.select(max("count")).show() //intellij feels that functions.max would be less confusing
+//  spark.sql("SELECT max(count) from flight_data_2015").show() //show everything in this case just 1 row
+//  flightData2015.select(max("count")).show() //intellij feels that functions.max would be less confusing
 
 
   //very similar to the exercise except we use limit 5 here
@@ -88,7 +88,7 @@ object Day18SExerciseSolved extends App {
       ORDER BY sum(count) DESC
       LIMIT 5
       """)
-  maxSql.show()
+//  maxSql.show()
 
   //Now, let’s move to the DataFrame syntax that is semantically similar but slightly different in
   //implementation and ordering
@@ -99,6 +99,18 @@ object Day18SExerciseSolved extends App {
     .sort(desc("destination_total"))
     .limit(5)
     .show()
+
+  // I'll save the output into a Scala Array (of rows):
+  val arrTopDestinations =  flightData2015
+    .groupBy("DEST_COUNTRY_NAME")
+    .sum("count")
+    .withColumnRenamed("sum(count)", "destination_total")
+    .sort(desc("destination_total"))
+    .limit(5)
+    .collect()
+
+  println(s"Top 5 destinations are:\n${arrTopDestinations.mkString("\n")}")
+
 
   //results and execution should be the same we can always check with explain() instead of show()
 
