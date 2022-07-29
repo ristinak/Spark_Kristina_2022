@@ -87,5 +87,13 @@ object Day20BasicStructuredOperations extends App {
     .option("sep", ",")
     .mode("overwrite")
     .csv("src/resources/csv/flight_summary_2015.csv")
+
+  // Testing Spark definitive guide page 77
+
+  df.selectExpr(
+    "*", // include all original columns
+    "(DEST_COUNTRY_NAME = ORIGIN_COUNTRY_NAME) as withinCountry")
+    .show(10)
+
 }
 
