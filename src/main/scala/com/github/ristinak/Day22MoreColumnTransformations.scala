@@ -227,4 +227,75 @@ object Day22MoreColumnTransformations extends App {
   //you would expect all 3 of these to be exactly the same
   df.orderBy(desc("count"), asc("DEST_COUNTRY_NAME")).show(5)
   //you can add more sorting columns(more tiebreaks)
+
+  //Day 23 finishing on Limits and Collect and Coalesce
+  //remember most SPARK commands and operations can be done using SQL syntax
+  //all you need to do is to create a temporary view
+  //there should be no perfomance penalty
+  df.createOrReplaceTempView("dfTable") //Temp View is required to run Spark SQL
+  spark.sql("SELECT * FROM dfTable " +
+    "ORDER BY count DESC").show(5)
+
+  //Limit
+  //Oftentimes, you might want to restrict what you extract from a DataFrame; for example, you
+  //might want just the top ten of some DataFrame. You can do this by using the limit method
+
+  // in Scala
+  df.limit(5).show() //so only 5 results will be shown
+
+  spark.sql("SELECT * FROM dfTable LIMIT 3").show(5) //only 3 should be shown
+
+  //Repartition and Coalesce
+  //Another important optimization opportunity is to partition the data according to some frequently
+  //filtered columns, which control the physical layout of data across the cluster including the
+  //partitioning scheme and the number of partitions.
+  //Repartition will incur a full shuffle of the data, regardless of whether one is necessary. This
+  //means that you should typically only repartition when the future number of partitions is greater
+  //than your current number of partitions or when you are looking to partition by a set of columns:
+
+  println(s"We have partition count: ${df.rdd.getNumPartitions}")
+
+  //If you know that you’re going to be filtering by a certain column often, it can be worth
+  //repartitioning based on that column:
+  val newDFsinglePart = df.repartition(5, col("DEST_COUNTRY_NAME"))
+  println(s"We have partition count: ${df.rdd.getNumPartitions}")
+  println(s"We have partition count: ${newDFsinglePart.rdd.getNumPartitions}")
+
+  //Coalesce, on the other hand, will not incur a full shuffle and will try to combine partitions. This
+  //operation will shuffle your data into five partitions based on the destination country name, and
+  //then coalesce them (without a full shuffle)
+  val dfCoalesced2 = df.repartition(10, col("DEST_COUNTRY_NAME")).coalesce(2)
+  println(s"We have partition count: ${df.rdd.getNumPartitions}") //should be still 1
+  println(s"We have partition count: ${dfCoalesced2.rdd.getNumPartitions}") //should be 2
+  //again with a single machine there is not much point in partitions this is meant for actual deployments over multiple machines
+
+
+  //Collecting Rows to the Driver
+  //As discussed in previous chapters, Spark maintains the state of the cluster in the driver. There are
+  //times when you’ll want to collect some of your data to the driver in order to manipulate it on
+  //your local machine.
+  //Thus far, we did not explicitly define this operation. However, we used several different methods
+  //for doing so that are effectively all the same.
+  //
+  // collect gets all data from the entire DataFrame,
+  //take selects the first N rows,
+  // and show prints out a number of rows nicely.
+
+  val collectDF = df.limit(10) //we do not have the date locally here this is just an instruction
+  val arrRow5 = collectDF.take(5) // take works with an Integer count
+  //Returns the first n rows in the Dataset.
+  //Running take requires moving data into the application's driver process, and doing so with a very large n can crash the driver process with OutOfMemoryError.
+
+  collectDF.show() // this prints it out nicely
+  collectDF.show(5, false) //also prints and keeps long strings inside cells for show
+
+  val arrRow10 = collectDF.collect() //Returns an array that contains all rows in this Dataset.
+  // Running collect requires moving all the data into the application's driver process,
+  // and doing so on a very large dataset can crash the driver process with OutOfMemoryError.
+
+  //now that we have data locally we can do whatever we want using standard Scala code
+  arrRow5.foreach(println)
+  println("All 10")
+  arrRow10.foreach(println)
+
 }
