@@ -11,7 +11,7 @@ object SparkUtil {
    * @param verbose - prints debug info
    * @return sparkSession
    */
-  def getSpark(appName:String, partitionCount:Int = 5, master:String = "local", verbose:Boolean = true): SparkSession = {
+  def getSpark(appName:String, partitionCount:Int = 1, master:String = "local", verbose:Boolean = true): SparkSession = {
     if (verbose) println(s"$appName with Scala version: ${util.Properties.versionNumberString}")
     val sparkSession = SparkSession.builder().appName(appName).master(master).getOrCreate()
     sparkSession.conf.set("spark.sql.shuffle.partitions", partitionCount)
