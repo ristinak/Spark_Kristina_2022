@@ -1,6 +1,6 @@
 package com.github.ristinak
 
-import org.apache.spark.sql.functions.{col, lit}
+import org.apache.spark.sql.functions.{col, desc, lit}
 
 object Day23DifferentDataTypes extends App {
   //Documentation for Dataset (which applies to DataFrames as well) methods and properties
@@ -12,7 +12,7 @@ object Day23DifferentDataTypes extends App {
   //reduce the number of rows available. To begin, let’s read in the DataFrame that we’ll be using
   //for this analysis:
 
-  println("Ch6: Working with Different Types\nof Data")
+  println("Ch6: Working with Different Types of Data")
   val spark = SparkUtil.getSpark("BasicSpark")
 
   val filePath = "src/resources/retail-data/by-day/2010-12-01.csv"
@@ -38,7 +38,6 @@ object Day23DifferentDataTypes extends App {
   spark.sql("SELECT  5, 'five', 5.0 FROM dfTable").show(2)
   spark.sql("SELECT description, 5, 'five', 5.0 as Float5 FROM dfTable").show(6, truncate = false)
 
-
   //so select ALL rows which have InvoiceNo equal to 536365
   df.where(col("InvoiceNo").equalTo(536365))
     .select("InvoiceNo", "Description")
@@ -52,8 +51,6 @@ object Day23DifferentDataTypes extends App {
   df.where(col("InvoiceNo") === 536365)
     .select("InvoiceNo", "Description")
     .show(5, false)
-
-
 
   //Another option—and probably the cleanest—is to specify the predicate as an expression in a
   //string. This is valid for Python or Scala. Note that this also gives you access to another way of
@@ -73,11 +70,39 @@ object Day23DifferentDataTypes extends App {
   spark.sql("SELECT InvoiceNo,Description FROM dfTable WHERE InvoiceNo = 536365")
     .show(3, false)
 
+  // EXERCISE //
+
   //TODO is load 1st of March of 2011 into dataFrame
+  val filePath1 = "src/resources/retail-data/by-day/2011-03-01.csv"
+  val df1 = spark.read.format("csv")
+    .option("header", "true")
+    .option("inferSchema", "true") //we let Spark determine schema
+    .load(filePath1)
+
+  df.createOrReplaceTempView("dfTable1")
+
   //TODO get all purchases that have been made from Finland
+
+  println("All purchases made from Finland:")
+  df1.where(col("Country") === "Finland").show()
+
   //TODO sort by Unit Price and LIMIT 20
+
+  println("The first 20 purchases made from Finland, sorted by UnitPrice:")
+  df1.where(col("Country") === "Finland")
+    .orderBy(col("UnitPrice").desc)
+    .limit(20)
+    .show()
+
   //TODO collect results into an Array of Rows
-  //print these 20 Rows
+  // print these 20 Rows
+
+  val arrFinlandPurchases = df1.where(col("Country") === "Finland")
+    .orderBy(col("UnitPrice").desc)
+    .limit(20)
+    .collect()
+
+  arrFinlandPurchases.foreach(println)
 
   //You can use either SQL or Spark or mis of syntax
 
