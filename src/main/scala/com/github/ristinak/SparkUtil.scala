@@ -1,6 +1,6 @@
 package com.github.ristinak
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object SparkUtil {
   /**
