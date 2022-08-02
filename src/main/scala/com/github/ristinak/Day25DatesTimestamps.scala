@@ -99,6 +99,25 @@ object Day25DatesTimestamps extends App {
   //add new column which contains days passed since InvoiceDate (here it is March 1, 2011 but it could vary)
   //add new column with months passed since InvoiceDate
 
+  val filePath2011March1 = "src/resources/retail-data/by-day/2011-03-01.csv"
+  val df2011March1 = readCSVWithView(spark, filePath2011March1, viewName = "march1Table")
+
+  df2011March1.withColumn("Current_date", current_date())
+    .withColumn("Current_timestamp", current_timestamp())
+    .withColumn("Days_since_invoiceDate", datediff(col("Current_date"), col("InvoiceDate")))
+    .withColumn("Months_since_invoiceDate", months_between(col("Current_date"), col("InvoiceDate")))
+    .show(10, false)
+
+  spark.sql(
+    """
+      |SELECT *,
+      |current_date,
+      |current_timestamp,
+      |datediff(day, InvoiceDate, current_date) AS dateDiff,
+      |datediff(month, InvoiceDate, current_date) AS monthDiff
+      |FROM march1Table
+      |""".stripMargin)
+    .show(5, false)
 
 
 }
