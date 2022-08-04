@@ -1,7 +1,7 @@
 package com.github.ristinak
 
 
-import com.github.ristinak.SparkUtil.{getSpark, readCSVWithView}
+import com.github.ristinak.SparkUtil.{getSpark, readDataWithView}
 import org.apache.spark.sql.functions.{col, current_date, current_timestamp, date_add, date_sub, datediff, lit, months_between, to_date, to_timestamp}
 
 object Day25DatesTimestamps extends App {
@@ -10,7 +10,7 @@ object Day25DatesTimestamps extends App {
 
   val filePath = "src/resources/retail-data/by-day/2010-12-01.csv"
 
-  val df = readCSVWithView(spark, filePath)
+  val df = readDataWithView(spark, filePath)
 
   //Working with Dates and Timestamps
   //Dates and times are a constant challenge in programming languages and databases. It’s always
@@ -100,7 +100,7 @@ object Day25DatesTimestamps extends App {
   //add new column with months passed since InvoiceDate
 
   val filePath2011March1 = "src/resources/retail-data/by-day/2011-03-01.csv"
-  val df2011March1 = readCSVWithView(spark, filePath2011March1, viewName = "march1Table")
+  val df2011March1 = readDataWithView(spark, filePath2011March1, viewName = "march1Table")
 
   df2011March1.withColumn("Current_date", current_date())
     .withColumn("Current_timestamp", current_timestamp())

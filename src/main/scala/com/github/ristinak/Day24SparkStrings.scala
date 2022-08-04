@@ -1,6 +1,6 @@
 package com.github.ristinak
 
-import com.github.ristinak.SparkUtil.{getSpark, readCSVWithView}
+import com.github.ristinak.SparkUtil.{getSpark, readDataWithView}
 import org.apache.spark.sql.Encoders.INT
 import org.apache.spark.sql.functions.{col, desc, exp, expr, initcap, length, lit, lower, lpad, ltrim, regexp_extract, regexp_replace, rpad, rtrim, size, translate, trim, upper}
 
@@ -10,7 +10,7 @@ object Day24SparkStrings extends App {
 
   val filePath = "src/resources/retail-data/by-day/2010-12-01.csv"
 
-  val df = readCSVWithView(spark, filePath)
+  val df = readDataWithView(spark, filePath)
 
   //Working with Strings
   //String manipulation shows up in nearly every data flow, and it’s worth explaining what you can
@@ -113,7 +113,7 @@ object Day24SparkStrings extends App {
   //then show top 10 results of these 3 columns
 
   val filePath2011March1 = "src/resources/retail-data/by-day/2011-03-01.csv"
-  val df2011March1 = readCSVWithView(spark, filePath2011March1)
+  val df2011March1 = readDataWithView(spark, filePath2011March1)
 
   //prepping regex for materials
   val simpleMaterials = Seq("metal", "wood", "felt")
