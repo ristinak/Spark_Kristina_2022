@@ -13,10 +13,10 @@ object Day27UserDefinedFunctionsExercise extends App {
   def tempFtoC(n: Double):Double = myRound((n-32)*5/9, 2)
 //  def tempFtoC(n: Double):Double = ((n-32)*5/9).round
 
-  val tempFtoC = udf(tempFtoC(_:Double):Double)
+  val tempFtoCUDF = udf(tempFtoC(_:Double):Double)
 
   df
-    .withColumn("temperatureC", tempFtoC(col("temperatureF")))
+    .withColumn("temperatureC", tempFtoCUDF(col("temperatureF")))
     .where(expr("temperatureF >= 90 AND temperatureF <= 110"))
     .show()
 
@@ -26,7 +26,7 @@ object Day27UserDefinedFunctionsExercise extends App {
   spark.sql(
     """
       |SELECT *,
-      |tempFtoC(temperatureF) temperatureC,
+      |tempFtoC(temperatureF) temperatureC
       |FROM dfTable
       |WHERE temperatureF >= 90 AND temperatureF <= 110
       |""".stripMargin)
