@@ -28,7 +28,7 @@ object Day27UserDefinedFunctionsExercise extends App {
       |SELECT *,
       |tempFtoC(temperatureF) temperatureC,
       |FROM dfTable
-      |WHERE temperatureF >= 90 && temperatureF <= 110
+      |WHERE temperatureF >= 90 AND temperatureF <= 110
       |""".stripMargin)
     .show()
 
