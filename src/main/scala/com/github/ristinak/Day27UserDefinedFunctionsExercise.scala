@@ -33,11 +33,11 @@ object Day27UserDefinedFunctionsExercise extends App {
     .show()
 
   //TODO create a UDF which converts Fahrenheit to Celsius
-  //TODO Create DF with column temperatureF with temperatures from -40 to 120 using range or something else if want
-  //TODO register your UDF function
-  //TODO use your UDF to create temperatureC column with the actual conversion
+  // Create DF with column temperatureF with temperatures from -40 to 120 using range or something else if want
+  // register your UDF function
+  // use your UDF to create temperatureC column with the actual conversion
 
-  //TODO show both columns starting with F temperature at 90 and ending at 110( both included)
+  // show both columns starting with F temperature at 90 and ending at 110( both included)
 
   //You probably want Double incoming and Double also as a return
 }
