@@ -2,7 +2,7 @@ package com.github.ristinak
 
 import com.github.ristinak.SparkUtil.getSpark
 import com.github.ristinak.Util.myRound
-import org.apache.spark.sql.functions.{col, udf}
+import org.apache.spark.sql.functions.{col, expr, udf}
 
 object Day27UserDefinedFunctionsExercise extends App {
   println("Ch6: UDFs - User Defined Functions")
@@ -17,7 +17,7 @@ object Day27UserDefinedFunctionsExercise extends App {
 
   df
     .withColumn("temperatureC", tempFtoC(col("temperatureF")))
-    .where(col("temperatureF") >= 90 && col("temperatureF") <= 110 )
+    .where(expr("temperatureF >= 90 AND temperatureF <= 110"))
     .show()
 
   spark.udf.register("tempFtoC", tempFtoC(_:Double):Double)
