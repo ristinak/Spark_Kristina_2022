@@ -27,7 +27,7 @@ object Day28StatisticalFunExercise extends App {
   //you could use SQL distinct of course - do not hav eto use collect_set but you can :)
 
   val distCountries = df.agg(collect_set("Country"))
-  val countryArray = distCountries.collectAsList().toArray().map(_.toString) // this is wrong
+  val countryArray = distCountries.collectAsList().toArray().map(_.toString)
   val countries = countryArray(0).split("\\(|\\)").tail.dropRight(1)
 
   println(countries.mkString(","))
