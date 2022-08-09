@@ -28,8 +28,10 @@ object Day28StatisticalFunExercise extends App {
 
   val distCountries = df.agg(collect_set("Country"))
   val countryArray = distCountries.collectAsList().toArray().map(_.toString) // this is wrong
+  val countries = countryArray(0).split("\\(|\\)").tail.dropRight(1)
 
-  countryArray.foreach(println)
+  println(countries.mkString(","))
+
 
 
 
