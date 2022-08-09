@@ -15,7 +15,7 @@ object SparkUtil {
     if (verbose) println(s"$appName with Scala version: ${util.Properties.versionNumberString}")
     val sparkSession = SparkSession.builder().appName(appName).master(master).getOrCreate()
     sparkSession.conf.set("spark.sql.shuffle.partitions", partitionCount)
-    if (verbose) println(s"Session started on Spark version ${sparkSession.version} with ${partitionCount} partitions")
+    if (verbose) println(s"Session started on Spark version ${sparkSession.version} with ${partitionCount} partition(s)")
     sparkSession
   }
   //TODO write scalaDoc
