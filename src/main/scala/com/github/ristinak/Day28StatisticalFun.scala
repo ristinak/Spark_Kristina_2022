@@ -127,6 +127,48 @@ object Day28StatisticalFun extends App {
 
   //you could use SQL distinct of course - do not hav eto use collect_set but you can :)
 
+  val filePath = "src/resources/retail-data/by-day/2011-03-08.csv"
+
+  val dfMrch = readDataWithView(spark, filePath)
+
+  dfMrch.select(mean( "Quantity"),
+    var_pop( "Quantity"),
+    var_samp("Quantity"),
+    stddev_pop("Quantity"),
+    stddev_samp("Quantity"),
+    skewness("Quantity"),
+    kurtosis("Quantity")).show()
+
+  //TODO transform unique Countries for that day into a regular Scala Array of strings
+
+  //solved in class:
+
+  val countries = dfMrch.agg(collect_set("Country")).collect()
+  println(countries.mkString) //prints but we actually want the strings
+  //  val countryStrings = countries.map(_.getString(0))
+  println("Printing row by row")
+  for (row <- countries) {
+    println(row)
+  }
+  //turns out we only have a single row which we would need to split using regex
+
+  val distinctCountries = spark.sql(
+    """
+      |SELECT DISTINCT(country) FROM dfTable
+      |""".stripMargin)
+
+  distinctCountries.show()
+  val countryStringsRows = distinctCountries.collect()
+  val countryStrings = countryStringsRows.map(_.getString(0))
+  //should be a regular array of strings
+  println(countryStrings.mkString(","))
+  //you could use SQL distinct of course - do not hav eto use collect_set but you can :)
+
+  //so this is how we could get out a sequence saved in a single cell of a dataframe
+  //check chapter 6 again on complex types
+  val countrySeq:Seq[String] = countries.head.getSeq(0) //first column for our first row
+  println(countrySeq.mkString("[",",","]"))
+
 
 }
 
