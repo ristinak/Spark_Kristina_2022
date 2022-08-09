@@ -25,7 +25,9 @@ object SparkUtil {
                        viewName:String="dfTable",
                        header:Boolean=true,
                        inferSchema:Boolean=true,
-                       printSchema:Boolean =true) :DataFrame = {
+                       printSchema:Boolean =true,
+                       cacheOn: Boolean = true
+                      ) :DataFrame = {
 
     val df = spark.read.format(source)
       .option("header", header.toString) //Spark wants string here since option is generic
@@ -38,6 +40,7 @@ object SparkUtil {
       println(s"Created Temporary View for SQL queries called: $viewName")
     }
     if (printSchema) df.printSchema()
+    if (cacheOn) df.cache()
     df
   }
 }

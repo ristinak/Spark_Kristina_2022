@@ -1,7 +1,7 @@
 package com.github.ristinak
 
 import com.github.ristinak.SparkUtil.{getSpark, readDataWithView}
-import org.apache.spark.sql.functions.{approx_count_distinct, count, countDistinct}
+import org.apache.spark.sql.functions.{approx_count_distinct, avg, col, count, countDistinct, expr, first, last, max, min, sum, sum_distinct}
 
 object Day27Aggregations extends App {
   println("Ch7: Aggregations")
@@ -89,13 +89,79 @@ object Day27Aggregations extends App {
   df.select(approx_count_distinct("StockCode")).show()
   df.select(approx_count_distinct("StockCode", 0.01)).show()
 
+  df.select(
+    count("Quantity").alias("total_transactions"),
+    sum("Quantity").alias("total_purchases"),
+    avg("Quantity").alias("avg_purchases"),
+    expr("mean(Quantity)").alias("mean_purchases"))
+    .selectExpr(
+      "total_purchases/total_transactions",
+      "avg_purchases",
+      "mean_purchases").show()
+
   //You will notice that approx_count_distinct took another parameter with which you can
   //specify the maximum estimation error allowed. In this case, we specified a rather large error and
   //thus receive an answer that is quite far off but does complete more quickly than countDistinct.
   //You will see much greater performance gains with larger datasets
 
-  //TODO simple task find count, distinct count and also aproximate distinct count (with default RSD)
+  //TODO simple task find count, distinct count and also approximate distinct count (with default RSD)
   // for InvoiceNo, CustomerID AND UnitPrice columns
   //of course count should be the same for all of these because that is the number of rows
+
+  df.select(count("InvoiceNo"),
+    count("CustomerID"),
+    count("UnitPrice"))
+    .show()
+
+  df.select(countDistinct("InvoiceNo"),
+    countDistinct("CustomerID"),
+    countDistinct("UnitPrice"))
+    .show()
+
+  df.select(approx_count_distinct("InvoiceNo"),
+    approx_count_distinct("CustomerID"),
+    approx_count_distinct("UnitPrice"))
+    .show()
+
+  //first and last
+  //You can get the first and last values from a DataFrame by using these two obviously named
+  //functions. This will be based on the rows in the DataFrame, not on the values in the DataFrame
+  //so not sorted values but just whatever happens to be first or last
+  df.select(first("StockCode"), last("StockCode")).show()
+
+  //  min and max
+  //  To extract the minimum and maximum values from a DataFrame, use the min and max functions:
+  df.select(min("Quantity"),
+    max("Quantity"),
+    min("UnitPrice"),
+    max("UnitPrice")).show()
+
+  //sum
+  //Another simple task is to add all the values in a row using the sum function:
+  //sumDistinct
+  //In addition to summing a total, you also can sum a distinct set of values by using the
+  //sumDistinct function:
+
+  df.select(sum("Quantity"),
+    sum_distinct(col("Quantity"))) //here sum_distinct would be sum of each unique quantity , so not very meaningful here
+    .show()
+
+  //avg
+  //Although you can calculate average by dividing sum by count, Spark provides an easier way to
+  //get that value via the avg or mean functions. In this example, we use alias in order to more
+  //easily reuse these columns later:
+
+
+
+  df.select(
+    count("Quantity").alias("total_transactions"),
+    sum("Quantity").alias("total_purchases"),
+    avg("Quantity").alias("avg_purchases"),
+    expr("mean(Quantity)").alias("mean_purchases"))
+    .withColumn("MyOwnAverage", expr("total_purchases/total_transactions"))
+    .withColumn("AvgRound", expr("round(total_purchases/total_transactions, 2)"))
+    .show(truncate = false)
+
+
 
 }
