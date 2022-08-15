@@ -1,0 +1,10 @@
+{"DEST_COUNTRY_NAME":"United States","ORIGIN_COUNTRY_NAME":"United States","count":348113}
+{"DEST_COUNTRY_NAME":"United States","ORIGIN_COUNTRY_NAME":"Canada","count":8305}
+{"DEST_COUNTRY_NAME":"Canada","ORIGIN_COUNTRY_NAME":"United States","count":8271}
+{"DEST_COUNTRY_NAME":"United States","ORIGIN_COUNTRY_NAME":"Mexico","count":6220}
+{"DEST_COUNTRY_NAME":"Mexico","ORIGIN_COUNTRY_NAME":"United States","count":6200}
+{"DEST_COUNTRY_NAME":"United Kingdom","ORIGIN_COUNTRY_NAME":"United States","count":1629}
+{"DEST_COUNTRY_NAME":"United States","ORIGIN_COUNTRY_NAME":"United Kingdom","count":1503}
+{"DEST_COUNTRY_NAME":"United States","ORIGIN_COUNTRY_NAME":"Germany","count":1406}
+{"DEST_COUNTRY_NAME":"Germany","ORIGIN_COUNTRY_NAME":"United States","count":1392}
+{"DEST_COUNTRY_NAME":"Japan","ORIGIN_COUNTRY_NAME":"United States","count":1383}
