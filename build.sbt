@@ -22,3 +22,7 @@ libraryDependencies += "org.apache.spark" %% "spark-streaming" % "3.3.0" % "prov
 //libraryDependencies += "org.apache.spark" %% "spark-mllib" % "3.3.0" % "provided"
 libraryDependencies += "org.apache.spark" %% "spark-mllib" % "3.3.0"
 
+// https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+libraryDependencies += "org.xerial" % "sqlite-jdbc" % "3.39.2.0"
+
+
