@@ -36,7 +36,7 @@ object Day32RFormula extends App {
   //TODO make sure they are numeric columns - we do not want one hot encoding here
   //you can leave column names at default
 
-  //create output dataframe with the the formula peforming fit and transform
+  //create output dataframe with the formula performing fit and transform
 
   //TODO BONUS try creating features from ALL columns in the Dec1st CSV except of course Country (using . syntax)
   //This should generate very sparse column of features because of one hot encoding
