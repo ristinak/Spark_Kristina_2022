@@ -1,6 +1,7 @@
 package com.github.ristinak
 
 import com.github.ristinak.SparkUtil.getSpark
+import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.feature.RFormula
 import org.apache.spark.ml.linalg.Vectors
 //WARNING
@@ -132,6 +133,70 @@ object Day32MLintro extends App {
   train.describe().show()
 
   test.describe().show()
+
+  //Estimators
+  //Now that we have transformed our data into the correct format and created some valuable
+  //features, it’s time to actually fit our model. In this case we will use a classification algorithm
+  //called logistic regression. To create our classifier we instantiate an instance of
+  //LogisticRegression, using the default configuration or hyperparameters. We then set the label
+  //columns and the feature columns; the column names we are setting—label and features—are
+  //actually the default labels for all estimators in Spark MLlib, and in later chapters we omit them
+
+  val lrModel = new LogisticRegression() //here you could input some hyperparameters to adjust the model settings
+    .setLabelCol("label") //again these can be skipped if your dataframe is using default label and features columns
+    .setFeaturesCol("features")
+
+  //Before we actually go about training this model, let’s inspect the parameters. This is also a great
+  //way to remind yourself of the options available for each particular model:
+
+  // in Scala
+  println(lrModel.explainParams())
+
+  //While the output is too large to reproduce here, it shows an explanation of all of the parameters
+  //for Spark’s implementation of logistic regression. The explainParams method exists on all
+  //algorithms available in MLlib.
+
+  //Upon instantiating an untrained algorithm, it becomes time to fit it to data. In this case, this
+  //returns a LogisticRegressionModel:
+
+  // in Scala
+  //This code will kick off a Spark job to train the model. As opposed to the transformations that you
+  //saw throughout the book, the fitting of a machine learning model is eager and performed
+  //immediately.
+  val fittedLR = lrModel.fit(train)
+
+  //Once complete, you can use the model to make predictions. Logically this means tranforming
+  //features into labels. We make predictions with the transform method. For example, we can
+  //transform our training dataset to see what labels our model assigned to the training data and how
+  //those compare to the true outputs. This, again, is just another DataFrame we can manipulate.
+  //Let’s perform that prediction with the following code snippet
+
+  val fittedDF = fittedLR.transform(test)
+  //    .select("label", "prediction")
+
+  fittedDF.show(false)
+
+
+  //Our next step would be to manually evaluate this model and calculate performance metrics like
+  //the true positive rate, false negative rate, and so on. We might then turn around and try a
+  //different set of parameters to see if those perform better. However, while this is a useful process,
+  //it can also be quite tedious. Spark helps you avoid manually trying different models and
+  //evaluation criteria by allowing you to specify your workload as a declarative pipeline of work
+  //that includes all your transformations as well as tuning your hyperparameters.
+
+  //we could create a column where there is a mismatch between true label and our prediction
+  //then we could calculate false positive, false negatives etc
+
+  //A REVIEW OF HYPERPARAMETERS
+  //Although we mentioned them previously, let’s more formally define hyperparameters.
+  //Hyperparameters are configuration parameters that affect the training process, such as model
+  //architecture and regularization. They are set prior to starting training. For instance, logistic
+  //regression has a hyperparameter that determines how much regularization should be
+  //performed on our data through the training phase (regularization is a technique that pushes
+  //models against overfitting data). You’ll see in the next couple of pages that we can set up our
+  //pipeline to try different hyperparameter values (e.g., different regularization values) in order
+  //to compare different variations of the same model against one another.
+
 
 
 }
