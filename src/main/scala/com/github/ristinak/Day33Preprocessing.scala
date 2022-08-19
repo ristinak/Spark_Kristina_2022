@@ -1,8 +1,8 @@
 package com.github.ristinak
 
 import com.github.ristinak.SparkUtil.getSpark
-import org.apache.spark.ml.feature.{StandardScaler, Tokenizer, VectorAssembler}
-import org.apache.spark.sql.functions.expr
+import org.apache.spark.ml.feature.{SQLTransformer, StandardScaler, Tokenizer, VectorAssembler}
+import org.apache.spark.sql.functions.{expr, col, size}
 
 object Day33Preprocessing extends App {
     println("Ch25: Preprocessing and Feature Engineering")
@@ -77,6 +77,8 @@ object Day33Preprocessing extends App {
 
     val tkn = new Tokenizer().setInputCol("Description")
     tkn.transform(sales.select("Description")).show(false)
+
+    val tokenizedDF = tkn.transform(sales.select("Description"))
 
     //Estimators for Preprocessing
     //Another tool for preprocessing are estimators. An estimator is necessary when a transformation
@@ -160,4 +162,60 @@ object Day33Preprocessing extends App {
     //it should be using mean and variance (so both true)
 
     //TODO create a dataframe with all these columns - save to alice.csv file with all columns
+
+    //SQL Transformers
+    //A SQLTransformer allows you to leverage Spark’s vast library of SQL-related manipulations
+    //just as you would a MLlib transformation. Any SELECT statement you can use in SQL is a valid
+    //transformation. The only thing you need to change is that instead of using the table name, you
+    //should just use the keyword TH​IS. You might want to use SQLTransformer if you want to
+    //formally codify some DataFrame manipulation as a preprocessing step, or try different SQL
+    //expressions for features during hyperparameter tuning.
+    //
+    // Also note that the output of this
+    //transformation will be appended as a column to the output DataFrame. //TODO check this
+
+    //You might want to use an SQLTransformer in order to represent all of your manipulations on the
+    //very rawest form of your data so you can version different variations of manipulations as
+    //transformers. This gives you the benefit of building and testing varying pipelines, all by simply
+    //swapping out transformers. The following is a basic example of using SQLTransformer
+
+    val basicTransformation = new SQLTransformer()
+      .setStatement("""
+            SELECT sum(Quantity) as sumQuant, count(*) as rowCount, CustomerID
+            FROM __THIS__
+            GROUP BY CustomerID
+            ORDER BY sumQuant DESC
+            """)
+
+    val groupedByCustomer = basicTransformation.transform(sales)
+    groupedByCustomer.show(10, false)
+
+    val simpleTransformation = new SQLTransformer()
+      .setStatement(
+          """
+            |SELECT *, CHAR_LENGTH(Description) as descLength
+            |FROM __THIS__
+            |""".stripMargin)
+
+    val descriptionDF = simpleTransformation.transform(sales)
+
+    //we can use regular sql if we did not know about Transformers
+    sales
+      .withColumn("descLength", expr("CHAR_LENGTH(Description)"))
+      .show(5, false)
+
+    descriptionDF.printSchema()
+    descriptionDF.show(10, false)
+
+    tokenizedDF.printSchema()
+    tokenizedDF.show(5, false)
+
+    //Since: 3.3.0 .. so not good in 3.2.2...
+    //    tokenizedDF
+    //      .withColumn("tokenCount", expr("array_size(myTokens)"))
+    //      .show(5, false)
+    tokenizedDF.
+      withColumn("tokenCount", size(col("myTokens")))
+      .show(10, false)
+    //there should be a way of doing above size(col( with SQL expr as well
 }
