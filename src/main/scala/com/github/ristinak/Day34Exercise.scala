@@ -9,9 +9,8 @@ object Day34Exercise extends App {
 
   //TODO using tokenized alice - from weekend exercise
 
-  val url = "src/resources/Alice.txt"
-  val df = readDataWithView(spark, url, source = "text", header = false)
-    .withColumnRenamed("value", "text")
+  val path = "src/resources/Alice.txt"
+  val df = spark.read.textFile(path).withColumnRenamed("value", "text")
   df.cache()
 
   val tkn = new Tokenizer().setInputCol("text").setOutputCol("words")
