@@ -1,7 +1,7 @@
 package com.github.ristinak
 
 import com.github.ristinak.SparkUtil.{getSpark, readDataWithView}
-import org.apache.spark.ml.feature.{Bucketizer, CountVectorizer, MinMaxScaler, NGram, QuantileDiscretizer, RegexTokenizer, StopWordsRemover, StringIndexer, Tokenizer, VectorAssembler}
+import org.apache.spark.ml.feature.{CountVectorizer, StopWordsRemover, Tokenizer}
 
 object Day34Exercise extends App {
 
