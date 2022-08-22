@@ -62,7 +62,7 @@ object Day32PipelineExample extends App {
   //specifying different combinations of hyperparameters that we would like Spark to test. We will
   //then select the best model using an Evaluator that compares their predictions on our validation
   //data. We can test different hyperparameters in the entire pipeline, even in the RFormula that we
-  //use to manipulate the raw data. This code shows how we go about doing tha
+  //use to manipulate the raw data. This code shows how we go about doing that
 
   val params = new ParamGridBuilder()
     .addGrid(rForm.formula, Array(
@@ -72,10 +72,10 @@ object Day32PipelineExample extends App {
     .addGrid(lr.regParam, Array(0.1, 2.0))
     .build()
 
-  //in the above I created a grid of two possible feature vectors , then 3 different elasticNetParame, and two regularization parameters
+  //in the above I created a grid of two possible feature vectors, then 3 different elasticNetParame, and two regularization parameters
   //so our grid will check 2*3*2 = 12 different combinations of these parameters
 
-  //In our current paramter grid, there are three hyperparameters that will diverge from the defaults:
+  //In our current parameter grid, there are three hyperparameters that will diverge from the defaults:
   //Two different versions of the RFormula
   //Three different options for the ElasticNet parameter
   //Two different options for the regularization parameter
@@ -98,7 +98,7 @@ object Day32PipelineExample extends App {
   //model selection to try out different hyperparameters in our logistic regression model and
   //measure success by comparing their performance using the areaUnderROC metric.
   //As we discussed, it is a best practice in machine learning to fit hyperparameters on a validation
-  //set (instead of your test set) to prevent overfitting. For this reason, we cannot use our holdout test
+  //set (instead of your test set) to prevent over-fitting. For this reason, we cannot use our holdout test
   //set (that we created before) to tune these parameters. Luckily, Spark provides two options for
   //performing hyperparameter tuning automatically. We can use TrainValidationSplit, which
   //will simply perform an arbitrary random split of our data into two different groups, or
