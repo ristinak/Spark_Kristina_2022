@@ -21,7 +21,7 @@ object Day34Exercise extends App {
 
   val englishStopWords = StopWordsRemover.loadDefaultStopWords("english")
   val stops = new StopWordsRemover()
-    .setStopWords(englishStopWords) //what we are going to remove
+    .setStopWords(englishStopWords)
     .setInputCol("words")
     .setOutputCol("noStopWords")
   stops.transform(dfWithWords).show(20, false)
@@ -34,13 +34,13 @@ object Day34Exercise extends App {
     .setInputCol("words")
     .setOutputCol("countVec")
     .setVocabSize(500)
-    .setMinTF(2) //so term has to appear at least once
-    .setMinDF(3) //and this term has to appear in at least two documents //so single use somewhere will not be shown
+    .setMinTF(2) //so term has to appear at least twice
+    .setMinDF(3) //and this term has to appear in at least 3 documents
   val fittedCV = cv.fit(dfWithWords)
 
   fittedCV.transform(dfWithWords).show(30, false)
 
-  //we can print out vocabulary , so here I print words index 30 to 49
+  //we can print out vocabulary
   println(fittedCV.vocabulary.mkString(","))
 
 }
