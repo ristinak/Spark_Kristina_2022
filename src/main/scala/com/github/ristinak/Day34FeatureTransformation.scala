@@ -1,7 +1,7 @@
 package com.github.ristinak
 
 import com.github.ristinak.SparkUtil.getSpark
-import org.apache.spark.ml.feature.{Bucketizer, CountVectorizer, MinMaxScaler, NGram, QuantileDiscretizer, RegexTokenizer, StopWordsRemover, StringIndexer, Tokenizer, VectorAssembler}
+import org.apache.spark.ml.feature.{Bucketizer, CountVectorizer, MinMaxScaler, NGram, PCA, QuantileDiscretizer, RFormula, RegexTokenizer, StopWordsRemover, StringIndexer, Tokenizer, UnivariateFeatureSelector, VectorAssembler}
 
 object Day34FeatureTransformation extends App {
   println("Ch24: Working with Continuous Features and Categorical")
@@ -325,5 +325,118 @@ object Day34FeatureTransformation extends App {
 
   //TODO show first 30 rows of data
 
+  //moving onto reducing features
+  //https://en.wikipedia.org/wiki/Curse_of_dimensionality
+
+  //Feature Manipulation
+  //While nearly every transformer in ML manipulates the feature space in some way, the following
+  //algorithms and tools are automated means of either expanding the input feature vectors or
+  //reducing them to a lower number of dimensions.
+  //PCA
+  //Principal Components Analysis (PCA) is a mathematical technique for finding the most
+  //important aspects of our data (the principal components). It changes the feature representation of
+  //our data by creating a new set of features (“aspects”). Each new feature is a combination of the
+  //original features. The power of PCA is that it can create a smaller set of more meaningful
+  //features to be input into your model, at the potential cost of interpretability.
+  //You’d want to use PCA if you have a large input dataset and want to reduce the total number of
+  //features you have. This frequently comes up in text analysis where the entire feature space is
+  //massive and many of the features are largely irrelevant. Using PCA, we can find the most
+  //important combinations of features and only include those in our machine learning model. PCA
+  //takes a parameter �, specifying the number of output features to create. Generally, this should be
+  //much smaller than your input vectors’ dimension.
+  //NOTE
+  //Picking the right � is nontrivial and there’s no prescription we can give. Check out the relevant
+  //chapters in ESL and ISL for more information.
+  //https://en.wikipedia.org/wiki/Principal_component_analysis
+
+  //Let’s train PCA with a � of 2
+
+  val pca = new PCA()
+    .setInputCol("features")
+    .setOutputCol("pca_2")
+    .setK(2) //so out of whatever number of features we have
+  //we will end up with only 2 features - transformed and combined from the existing ones
+
+  scaleDF.show(10, false)
+
+  //we do need to estimate/fit because the PCA algorithm needs to analyize the features ahead of time to make the transformation
+
+  //so here out of 3 features we transform them into 2 features
+  //of course some information is lost in the process
+  //usually you can't squeeze n-dimensional features into (n-1) dimensions without losing some information
+  pca.fit(scaleDF).transform(scaleDF).show(false)
+
+
+  //Interaction
+  //In some cases, you might have domain knowledge about specific variables in your dataset. For
+  //example, you might know that a certain interaction between the two variables is an important
+  //variable to include in a downstream estimator. The feature transformer Interaction allows you
+  //to create an interaction between two variables manually. It just multiplies the two features
+  //together—something that a typical linear model would not do for every possible pair of features
+  //in your data. This transformer is currently only available directly in Scala but can be called from
+  //any language using the RFormula. We recommend users just use RFormula instead of manually
+  //creating interactions - of course you could multiply the values of two columns by "hand" using SQL syntax
+
+  val supervised = new RFormula()
+    .setFormula("labInd ~ value1 + value2 + value1:value2") //so : in RFormula is just a multiplication
+  //you would have to ask R creators why they did not use * or x here :)
+  supervised.fit(idxRes).transform(idxRes).show(false)
+
+  //Polynomial Expansion
+  //Polynomial expansion is used to generate interaction variables of all the input columns. With
+  //polynomial expansion, we specify to what degree we would like to see various interactions. For
+  //example, for a degree-2 polynomial, Spark takes every value in our feature vector, multiplies it
+  //by every other value in the feature vector, and then stores the results as features. For instance, if
+  //we have two input features, we’ll get four output features if we use a second degree polynomial
+  //(2x2). If we have three input features, we’ll get nine output features (3x3). If we use a third-
+  //degree polynomial, we’ll get 27 output features (3x3x3) and so on. This transformation is useful
+  //when you want to see interactions between particular features but aren’t necessarily sure about
+  //which interactions to consider.
+
+
+
+  //https://en.wikipedia.org/wiki/Chi-squared_test
+  //Feature Selection
+  //Often, you will have a large range of possible features and want to select a smaller subset to use
+  //for training. For example, many features might be correlated, or using too many features might
+  //lead to overfitting. This process is called feature selection. There are a number of ways to
+  //evaluate feature importance once you’ve trained a model but another option is to do some rough
+  //filtering beforehand. Spark has some simple options for doing that, such as ChiSqSelector.
+  //ChiSqSelector
+  //ChiSqSelector leverages a statistical test to identify features that are not independent from the
+  //label we are trying to predict, and drop the uncorrelated features. It’s often used with categorical
+  //data in order to reduce the number of features you will input into your model, as well as to
+  //reduce the dimensionality of text data (in the form of frequencies or counts). Since this method is
+  //based on the Chi-Square test, there are several different ways we can pick the “best” features.
+  //The methods are numTopFeatures, which is ordered by p-value; percentile, which takes a
+  //proportion of the input features (instead of just the top N features); and fpr, which sets a cut off
+  //p-value.
+  //We will demonstrate this with the output of the CountVectorizer created earlier in this chapter:
+
+  //of course 2 is not a good practice in production :)
+  val tkn2 = new Tokenizer().setInputCol("Description").setOutputCol("DescOut")
+  val tokenized2 = tkn
+    .transform(sales.select("Description", "CustomerId"))
+    .where("CustomerId IS NOT NULL")
+
+  val prechi = fittedCV.transform(tokenized2)
+  val chisq = new UnivariateFeatureSelector()
+    .setFeatureType("categorical")
+    .setLabelType("categorical") //so categorical features and categorical label -> ChiSquared Test
+    .setFeaturesCol("countVec")
+    .setLabelCol("CustomerId")
+
+
+
+  chisq.fit(prechi).transform(prechi)
+    //    .drop("customerId", "Description", "DescOut")
+    .show(10, false)
+
+  //looks like by default UnivariateFeatureSelector goes down to 50 features - it is not clear whether this is default hard coded 50
+  //or is is 10 fold reduction from 500 //TODO find in documentation
+
+
+  //when would you use this feature selector? any time you are not getting good results from your full feature set
+  //again all models are wrong - but some are useful :)
 
 }
