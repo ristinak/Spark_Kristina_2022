@@ -53,3 +53,21 @@
 22/08/25 20:25:18 WARN netlib.InstanceBuilder$NativeLAPACK: Failed to load implementation from:dev.ludovic.netlib.lapack.JNILAPACK
 22/08/25 20:25:19 WARN util.Instrumentation: [cab8df65] regParam is zero, which might cause numerical instability and overfitting.
 22/08/25 20:25:19 WARN util.Instrumentation: [cab8df65] Cholesky solver failed due to singular covariance matrix. Retrying with Quasi-Newton solver.
+22/08/25 20:28:09 WARN util.Instrumentation: [0856432a] regParam is zero, which might cause numerical instability and overfitting.
+22/08/25 20:28:09 WARN netlib.InstanceBuilder$NativeBLAS: Failed to load implementation from:dev.ludovic.netlib.blas.JNIBLAS
+22/08/25 20:28:09 WARN netlib.InstanceBuilder$NativeBLAS: Failed to load implementation from:dev.ludovic.netlib.blas.ForeignLinkerBLAS
+22/08/25 20:28:09 WARN netlib.InstanceBuilder$NativeLAPACK: Failed to load implementation from:dev.ludovic.netlib.lapack.JNILAPACK
+22/08/25 20:28:10 WARN util.Instrumentation: [599caf7c] regParam is zero, which might cause numerical instability and overfitting.
+22/08/25 20:28:10 WARN util.Instrumentation: [599caf7c] Cholesky solver failed due to singular covariance matrix. Retrying with Quasi-Newton solver.
+22/08/25 20:28:50 WARN util.Instrumentation: [47795650] regParam is zero, which might cause numerical instability and overfitting.
+22/08/25 20:28:50 WARN netlib.InstanceBuilder$NativeBLAS: Failed to load implementation from:dev.ludovic.netlib.blas.JNIBLAS
+22/08/25 20:28:50 WARN netlib.InstanceBuilder$NativeBLAS: Failed to load implementation from:dev.ludovic.netlib.blas.ForeignLinkerBLAS
+22/08/25 20:28:50 WARN netlib.InstanceBuilder$NativeLAPACK: Failed to load implementation from:dev.ludovic.netlib.lapack.JNILAPACK
+22/08/25 20:28:51 WARN util.Instrumentation: [194a2f3d] regParam is zero, which might cause numerical instability and overfitting.
+22/08/25 20:28:51 WARN util.Instrumentation: [194a2f3d] Cholesky solver failed due to singular covariance matrix. Retrying with Quasi-Newton solver.
+22/08/25 20:30:42 WARN util.Instrumentation: [f059d757] regParam is zero, which might cause numerical instability and overfitting.
+22/08/25 20:30:42 WARN netlib.InstanceBuilder$NativeBLAS: Failed to load implementation from:dev.ludovic.netlib.blas.JNIBLAS
+22/08/25 20:30:42 WARN netlib.InstanceBuilder$NativeBLAS: Failed to load implementation from:dev.ludovic.netlib.blas.ForeignLinkerBLAS
+22/08/25 20:30:42 WARN netlib.InstanceBuilder$NativeLAPACK: Failed to load implementation from:dev.ludovic.netlib.lapack.JNILAPACK
+22/08/25 20:30:43 WARN util.Instrumentation: [c79636f5] regParam is zero, which might cause numerical instability and overfitting.
+22/08/25 20:30:43 WARN util.Instrumentation: [c79636f5] Cholesky solver failed due to singular covariance matrix. Retrying with Quasi-Newton solver.

@@ -116,11 +116,11 @@ object Day36Regression extends App {
     .setLabelCol("value")
     .setFeaturesCol("features")
 
-  val myNewDF = rFormula
+  val myNewDF = myRFormula
     .fit(myDF)
     .transform(myDF)
 
-  ndf.show(10)
+  myNewDF.show(10)
 
   //TODO create  a Linear Regression model, fit it to our 3d data
 
@@ -139,7 +139,7 @@ object Day36Regression extends App {
 
   val myIntercept = linRModel.intercept
   val myCoefficients = linRModel.coefficients.toArray
-  println(s"Intercept is $intercept and coefficients are ${myCoefficients.mkString(",")}")
+  println(s"Intercept is $myIntercept and coefficients are ${myCoefficients.mkString(",")}")
 
   //TODO make a prediction if values of x1, x2 and x3 are respectively 100, 50, 1000
 
