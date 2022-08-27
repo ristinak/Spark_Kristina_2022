@@ -127,12 +127,9 @@ object Day37Clustering extends App {
   val kMean = new KMeans().setK(bestNumClusters)
   val clusteredDF = kMean.fit(clusterDF).transform(clusterDF)
 
-  println("Clustered DF:")
-  clusterDF.show(false)
-
-
   //show dataframe with these optimal segments
-
+  println("Clustered DF:")
+  clusteredDF.sample(0.5).orderBy("prediction").show(false)
 
 
 }
