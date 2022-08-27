@@ -71,3 +71,83 @@
 22/08/25 20:30:42 WARN netlib.InstanceBuilder$NativeLAPACK: Failed to load implementation from:dev.ludovic.netlib.lapack.JNILAPACK
 22/08/25 20:30:43 WARN util.Instrumentation: [c79636f5] regParam is zero, which might cause numerical instability and overfitting.
 22/08/25 20:30:43 WARN util.Instrumentation: [c79636f5] Cholesky solver failed due to singular covariance matrix. Retrying with Quasi-Newton solver.
+22/08/27 09:20:57 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:21:06 ERROR util.Instrumentation: java.lang.IllegalArgumentException: features does not exist. Available: _c0, _c1
+	at org.apache.spark.sql.types.StructType.$anonfun$apply$1(StructType.scala:278)
+	at scala.collection.immutable.Map$Map2.getOrElse(Map.scala:307)
+	at org.apache.spark.sql.types.StructType.apply(StructType.scala:277)
+	at org.apache.spark.ml.util.SchemaUtils$.checkColumnTypes(SchemaUtils.scala:59)
+	at org.apache.spark.ml.util.SchemaUtils$.validateVectorCompatibleColumn(SchemaUtils.scala:205)
+	at org.apache.spark.ml.clustering.KMeansParams.validateAndTransformSchema(KMeans.scala:98)
+	at org.apache.spark.ml.clustering.KMeansParams.validateAndTransformSchema$(KMeans.scala:97)
+	at org.apache.spark.ml.clustering.KMeans.validateAndTransformSchema(KMeans.scala:272)
+	at org.apache.spark.ml.clustering.KMeans.transformSchema(KMeans.scala:372)
+	at org.apache.spark.ml.PipelineStage.transformSchema(Pipeline.scala:71)
+	at org.apache.spark.ml.clustering.KMeans.$anonfun$fit$1(KMeans.scala:330)
+	at org.apache.spark.ml.util.Instrumentation$.$anonfun$instrumented$1(Instrumentation.scala:191)
+	at scala.util.Try$.apply(Try.scala:210)
+	at org.apache.spark.ml.util.Instrumentation$.instrumented(Instrumentation.scala:191)
+	at org.apache.spark.ml.clustering.KMeans.fit(KMeans.scala:329)
+	at com.github.ristinak.Day37Clustering$.testKMeans(Day37Clustering.scala:72)
+	at com.github.ristinak.Day37Clustering$.$anonfun$newSilhouettes$1(Day37Clustering.scala:102)
+	at scala.runtime.java8.JFunction1$mcDI$sp.apply(JFunction1$mcDI$sp.scala:17)
+	at scala.collection.immutable.Range.map(Range.scala:59)
+	at com.github.ristinak.Day37Clustering$.delayedEndpoint$com$github$ristinak$Day37Clustering$1(Day37Clustering.scala:102)
+	at com.github.ristinak.Day37Clustering$delayedInit$body.apply(Day37Clustering.scala:9)
+	at scala.Function0.apply$mcV$sp(Function0.scala:39)
+	at scala.Function0.apply$mcV$sp$(Function0.scala:39)
+	at scala.runtime.AbstractFunction0.apply$mcV$sp(AbstractFunction0.scala:17)
+	at scala.App.$anonfun$main$1(App.scala:76)
+	at scala.App.$anonfun$main$1$adapted(App.scala:76)
+	at scala.collection.IterableOnceOps.foreach(IterableOnce.scala:563)
+	at scala.collection.IterableOnceOps.foreach$(IterableOnce.scala:561)
+	at scala.collection.AbstractIterable.foreach(Iterable.scala:926)
+	at scala.App.main(App.scala:76)
+	at scala.App.main$(App.scala:74)
+	at com.github.ristinak.Day37Clustering$.main(Day37Clustering.scala:9)
+	at com.github.ristinak.Day37Clustering.main(Day37Clustering.scala)
+
+22/08/27 09:25:57 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:29:31 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:42:45 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:45:10 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:46:26 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:47:32 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:51:38 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:52:18 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:53:11 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:54:59 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:56:48 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:57:28 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+22/08/27 09:57:34 ERROR util.Instrumentation: java.lang.IllegalArgumentException: features does not exist. Available: col1, col2
+	at org.apache.spark.sql.types.StructType.$anonfun$apply$1(StructType.scala:278)
+	at scala.collection.immutable.Map$Map2.getOrElse(Map.scala:307)
+	at org.apache.spark.sql.types.StructType.apply(StructType.scala:277)
+	at org.apache.spark.ml.util.SchemaUtils$.checkColumnTypes(SchemaUtils.scala:59)
+	at org.apache.spark.ml.util.SchemaUtils$.validateVectorCompatibleColumn(SchemaUtils.scala:205)
+	at org.apache.spark.ml.clustering.KMeansParams.validateAndTransformSchema(KMeans.scala:98)
+	at org.apache.spark.ml.clustering.KMeansParams.validateAndTransformSchema$(KMeans.scala:97)
+	at org.apache.spark.ml.clustering.KMeans.validateAndTransformSchema(KMeans.scala:272)
+	at org.apache.spark.ml.clustering.KMeans.transformSchema(KMeans.scala:372)
+	at org.apache.spark.ml.PipelineStage.transformSchema(Pipeline.scala:71)
+	at org.apache.spark.ml.clustering.KMeans.$anonfun$fit$1(KMeans.scala:330)
+	at org.apache.spark.ml.util.Instrumentation$.$anonfun$instrumented$1(Instrumentation.scala:191)
+	at scala.util.Try$.apply(Try.scala:210)
+	at org.apache.spark.ml.util.Instrumentation$.instrumented(Instrumentation.scala:191)
+	at org.apache.spark.ml.clustering.KMeans.fit(KMeans.scala:329)
+	at com.github.ristinak.Day37Clustering$.delayedEndpoint$com$github$ristinak$Day37Clustering$1(Day37Clustering.scala:130)
+	at com.github.ristinak.Day37Clustering$delayedInit$body.apply(Day37Clustering.scala:10)
+	at scala.Function0.apply$mcV$sp(Function0.scala:39)
+	at scala.Function0.apply$mcV$sp$(Function0.scala:39)
+	at scala.runtime.AbstractFunction0.apply$mcV$sp(AbstractFunction0.scala:17)
+	at scala.App.$anonfun$main$1(App.scala:76)
+	at scala.App.$anonfun$main$1$adapted(App.scala:76)
+	at scala.collection.IterableOnceOps.foreach(IterableOnce.scala:563)
+	at scala.collection.IterableOnceOps.foreach$(IterableOnce.scala:561)
+	at scala.collection.AbstractIterable.foreach(Iterable.scala:926)
+	at scala.App.main(App.scala:76)
+	at scala.App.main$(App.scala:74)
+	at com.github.ristinak.Day37Clustering$.main(Day37Clustering.scala:10)
+	at com.github.ristinak.Day37Clustering.main(Day37Clustering.scala)
+
+22/08/27 09:58:16 WARN executor.ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
