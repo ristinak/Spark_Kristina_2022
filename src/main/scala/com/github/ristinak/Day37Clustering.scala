@@ -114,7 +114,7 @@ object Day37Clustering extends App {
   val minCluster = 2
   val maxCluster = 20
   val newSilhouettes = (minCluster to maxCluster).map(n => testKMeans(clusterDF, n))
-  println("Silhouette scores from 2 to 20 K segments")
+  println(s"Silhouette scores from $minCluster to $maxCluster K segments")
   println(newSilhouettes.mkString(","))
 
   val bestSilhouette = newSilhouettes.max
