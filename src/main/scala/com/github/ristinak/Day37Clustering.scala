@@ -1,6 +1,5 @@
 package com.github.ristinak
 
-import breeze.linalg.max
 import com.github.ristinak.SparkUtil.getSpark
 import org.apache.spark.ml.clustering.KMeans
 import org.apache.spark.ml.evaluation.ClusteringEvaluator
@@ -85,14 +84,13 @@ object Day37Clustering extends App {
 
   //so we check our silhoutte score from 2 to 8 divisions,
   //our best silhoutte score would be with 150 segments since we have 150 rows but that would be useless...
-//  val silhouettes = (2 to 8).map(n => testKMeans(preparedDF, n))
-//
-//  println("Silhoutte scores from 2 to 8 K segments")
-//  println(silhouettes.mkString(","))
+  val silhouettes = (2 to 8).map(n => testKMeans(preparedDF, n))
+
+  println("Silhoutte scores from 2 to 8 K segments")
+  println(silhouettes.mkString(","))
 
   //TODO find optimal number of segments in the src/resources/csv/cluster_me.csv file
   //Use Silhouette calculations
-
   val newFilePath = "src/resources/csv/cluster_me.csv"
 
   val originalDF = spark.read
@@ -106,7 +104,11 @@ object Day37Clustering extends App {
     .setOutputCol("features")
 
   val clusterDF = myVector.transform(originalDF)
+  clusterDF.show(10, false)
 
+  //show dataframe with these optimal segments
+
+  //TODO to make it easier for you k will be in range from 2 to 20
   println()
   println("******* New clustering data *******")
   println()
@@ -114,10 +116,10 @@ object Day37Clustering extends App {
   val minCluster = 2
   val maxCluster = 20
   val newSilhouettes = (minCluster to maxCluster).map(n => testKMeans(clusterDF, n))
-  println(s"Silhouette scores from $minCluster to $maxCluster K segments")
+  println("Silhouette scores from 2 to 20 K segments")
   println(newSilhouettes.mkString(","))
 
-  val bestSilhouette = newSilhouettes.max
+  val bestSilhouette = newSilhouettes.max //best might not be max necessarily
   val bestNumClusters = newSilhouettes.indexOf(bestSilhouette) + minCluster
 
   println()
@@ -127,9 +129,25 @@ object Day37Clustering extends App {
   val kMean = new KMeans().setK(bestNumClusters)
   val clusteredDF = kMean.fit(clusterDF).transform(clusterDF)
 
-  //show dataframe with these optimal segments
   println("Clustered DF:")
-  clusteredDF.sample(0.5).orderBy("prediction").show(false)
+  clusterDF.show(false)
 
+  clusteredDF.show(20, false)
+
+  //here we see that silhouette score worked out perfectly as the max was indeed the best clustering number for kmeans
+  //with real data you might need to play around with a couple of highest scores - remembering about elbow method
+
+  clusteredDF
+    //you might also repartition down, you may not want 200 partitions either
+    //here we are repartitioning from 1 to 10
+    .repartition(10) //so see if this solves the memory issue it will save in 10 partitions
+    .drop("features") //i could of course use select everything but features instead
+    //i could also cast features as string
+    .write
+//    .format("parquet") //for csv i would need to cast features column to string
+    .format("csv")
+    .option("header", "true")
+    .mode("overwrite") //same as option("mode", "overwrite")
+    .save("src/resources/csv/clusteredAnswers.csv")
 
 }
